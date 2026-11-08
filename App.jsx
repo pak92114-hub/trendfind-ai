@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   TrendingUp, Search, DollarSign, Sparkles, ShieldAlert, 
   Layers, ExternalLink, Bookmark, Copy, Check, Filter, 
-  BarChart2, ArrowUpRight, Zap, RefreshCw, ShoppingBag 
+  BarChart2, ArrowUpRight, Zap, RefreshCw, ShoppingBag, Calculator 
 } from 'lucide-react';
 
 export default function App() {
@@ -10,7 +10,14 @@ export default function App() {
   const [copiedId, setCopiedId] = useState(null);
   const [savedProducts, setSavedProducts] = useState([]);
 
-  // Fixed Mock Products Database with Reliable Images & Proper Spacing
+  // Calculator State
+  const [costPrice, setCostPrice] = useState(5);
+  const [sellPrice, setSellPrice] = useState(30);
+  const [adSpend, setAdSpend] = useState(10);
+
+  const netProfit = (sellPrice - costPrice - adSpend).toFixed(2);
+  const roi = costPrice > 0 ? (((netProfit / costPrice) * 100)).toFixed(0) : 0;
+
   const products = [
     {
       id: 1,
@@ -131,6 +138,12 @@ export default function App() {
             🔥 Top Trending Products
           </button>
           <button 
+            onClick={() => setActiveTab('calculator')}
+            className={`pb-3 text-sm font-semibold transition border-b-2 ${activeTab === 'calculator' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
+          >
+            💰 Profit & ROI Calculator
+          </button>
+          <button 
             onClick={() => setActiveTab('generator')}
             className={`pb-3 text-sm font-semibold transition border-b-2 ${activeTab === 'generator' ? 'border-indigo-500 text-indigo-400' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
           >
@@ -197,7 +210,60 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab Content 2: Generator */}
+        {/* Tab Content 2: Profit Calculator */}
+        {activeTab === 'calculator' && (
+          <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6 max-w-2xl mx-auto">
+            <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+              <Calculator className="h-5 w-5 text-indigo-400" /> Dropshipping Profit & ROI Forecaster
+            </h3>
+            <p className="text-sm text-gray-400 mb-6">Calculate your exact margins after product cost and estimated advertising expenses.</p>
+
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="text-xs text-gray-400 block mb-1">Product Cost ($)</label>
+                <input 
+                  type="number" 
+                  value={costPrice} 
+                  onChange={(e) => setCostPrice(Number(e.target.value))}
+                  className="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-indigo-500" 
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-400 block mb-1">Target Selling Price ($)</label>
+                <input 
+                  type="number" 
+                  value={sellPrice} 
+                  onChange={(e) => setSellPrice(Number(e.target.value))}
+                  className="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-indigo-500" 
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-400 block mb-1">Estimated Ad Spend per Sale ($)</label>
+                <input 
+                  type="number" 
+                  value={adSpend} 
+                  onChange={(e) => setAdSpend(Number(e.target.value))}
+                  className="w-full bg-gray-900 border border-gray-800 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-indigo-500" 
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+              <div>
+                <span className="text-xs text-gray-400 block">Net Profit / Sale</span>
+                <span className={`text-2xl font-bold ${netProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>${netProfit}</span>
+              </div>
+              <div>
+                <span className="text-xs text-gray-400 block">Return on Investment (ROI)</span>
+                <span className="text-2xl font-bold text-indigo-400">{roi}%</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab Content 3: Generator */}
         {activeTab === 'generator' && (
           <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6">
             <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
