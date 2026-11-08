@@ -9,6 +9,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('trending');
   const [copiedId, setCopiedId] = useState(null);
   const [savedProducts, setSavedProducts] = useState([]);
+  
+  // Search & Filter State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   // Calculator State
   const [costPrice, setCostPrice] = useState(5);
@@ -59,6 +63,14 @@ export default function App() {
       description: "Ultra-slim 10,000mAh magnetic portable charger with fast charging output."
     }
   ];
+
+  // Filter Logic
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          p.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const handleCopy = (text, id) => {
     navigator.clipboard.writeText(text);
@@ -151,62 +163,97 @@ export default function App() {
           </button>
         </div>
 
-        {/* Tab Content 1: Products */}
+        {/* Tab Content 1: Products with Search & Filter */}
         {activeTab === 'trending' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {products.map((p) => (
-              <div key={p.id} className="bg-[#111827] border border-gray-800 rounded-2xl overflow-hidden hover:border-gray-700 transition flex flex-col justify-between">
-                <div>
-                  <div className="relative h-48 w-full bg-gray-900 overflow-hidden">
-                    <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
-                    <span className="absolute top-3 right-3 bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow z-10">
-                      Score: {p.trendScore}
-                    </span>
-                    <span className="absolute top-3 left-3 bg-black/60 backdrop-blur text-gray-200 text-xs px-2.5 py-1 rounded-full z-10">
-                      {p.category}
-                    </span>
-                  </div>
-                  
-                  <div className="p-5">
-                    <h4 className="font-semibold text-lg text-white mb-2 leading-snug">{p.title}</h4>
-                    <p className="text-xs text-gray-400 mb-4 h-10 overflow-hidden">{p.description}</p>
+          <div>
+            {/* Search Bar & Filter Controls */}
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-3.5 top-3 h-4 w-4 text-gray-400" />
+                <input 
+                  type="text"
+                  placeholder="Search products by keyword..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-[#111827] border border-gray-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                {['All', 'Health & Fitness', 'Home & Kitchen', 'Tech Gadgets'].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${selectedCategory === cat ? 'bg-indigo-600 text-white' : 'bg-[#111827] text-gray-400 hover:bg-gray-800 border border-gray-800'}`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {filteredProducts.map((p) => (
+                <div key={p.id} className="bg-[#111827] border border-gray-800 rounded-2xl overflow-hidden hover:border-gray-700 transition flex flex-col justify-between">
+                  <div>
+                    <div className="relative h-48 w-full bg-gray-900 overflow-hidden">
+                      <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                      <span className="absolute top-3 right-3 bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow z-10">
+                        Score: {p.trendScore}
+                      </span>
+                      <span className="absolute top-3 left-3 bg-black/60 backdrop-blur text-gray-200 text-xs px-2.5 py-1 rounded-full z-10">
+                        {p.category}
+                      </span>
+                    </div>
                     
-                    <div className="grid grid-cols-3 gap-2 bg-gray-900/50 p-3 rounded-xl border border-gray-800 text-center mb-4">
-                      <div>
-                        <span className="text-[10px] text-gray-400 uppercase font-medium block">Cost</span>
-                        <span className="text-sm font-bold text-gray-200">{p.aliPrice}</span>
-                      </div>
-                      <div>
-                        <span className="text-[10px] text-gray-400 uppercase font-medium block">Sell Price</span>
-                        <span className="text-sm font-bold text-emerald-400">{p.targetSell}</span>
-                      </div>
-                      <div>
-                        <span className="text-[10px] text-gray-400 uppercase font-medium block">Margin</span>
-                        <span className="text-sm font-bold text-indigo-400">{p.margin}</span>
+                    <div className="p-5">
+                      <h4 className="font-semibold text-lg text-white mb-2 leading-snug">{p.title}</h4>
+                      <p className="text-xs text-gray-400 mb-4 h-10 overflow-hidden">{p.description}</p>
+                      
+                      <div className="grid grid-cols-3 gap-2 bg-gray-900/50 p-3 rounded-xl border border-gray-800 text-center mb-4">
+                        <div>
+                          <span className="text-[10px] text-gray-400 uppercase font-medium block">Cost</span>
+                          <span className="text-sm font-bold text-gray-200">{p.aliPrice}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-gray-400 uppercase font-medium block">Sell Price</span>
+                          <span className="text-sm font-bold text-emerald-400">{p.targetSell}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-gray-400 uppercase font-medium block">Margin</span>
+                          <span className="text-sm font-bold text-indigo-400">{p.margin}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="p-5 pt-0 flex items-center justify-between gap-2">
-                  <button 
-                    onClick={() => toggleSave(p.id)}
-                    className={`flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition ${savedProducts.includes(p.id) ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
-                  >
-                    <Bookmark className="h-3.5 w-3.5" />
-                    {savedProducts.includes(p.id) ? 'Saved' : 'Save Product'}
-                  </button>
+                  <div className="p-5 pt-0 flex items-center justify-between gap-2">
+                    <button 
+                      onClick={() => toggleSave(p.id)}
+                      className={`flex-1 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition ${savedProducts.includes(p.id) ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
+                    >
+                      <Bookmark className="h-3.5 w-3.5" />
+                      {savedProducts.includes(p.id) ? 'Saved' : 'Save Product'}
+                    </button>
 
-                  <button 
-                    onClick={() => handleCopy(`Check out this trending product: ${p.title} - Target Sell: ${p.targetSell}`, p.id)}
-                    className="p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl transition"
-                    title="Copy Details"
-                  >
-                    {copiedId === p.id ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
-                  </button>
+                    <button 
+                      onClick={() => handleCopy(`Check out this trending product: ${p.title} - Target Sell: ${p.targetSell}`, p.id)}
+                      className="p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl transition"
+                      title="Copy Details"
+                    >
+                      {copiedId === p.id ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {filteredProducts.length === 0 && (
+              <div className="text-center py-12 text-gray-400 text-sm">
+                No products found matching your search query.
               </div>
-            ))}
+            )}
           </div>
         )}
 
