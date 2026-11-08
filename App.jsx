@@ -10,11 +10,11 @@ export default function App() {
   const [copiedId, setCopiedId] = useState(null);
   const [savedProducts, setSavedProducts] = useState([]);
 
-  // Mock Products Database
+  // Fixed Mock Products Database with Reliable Images & Proper Spacing
   const products = [
     {
       id: 1,
-      title: "Posture Corrector Smart Belt with LED Feedback",
+      title: "Posture Corrector Smart Belt",
       category: "Health & Fitness",
       margin: "74%",
       aliPrice: "$4.50",
@@ -27,7 +27,7 @@ export default function App() {
     },
     {
       id: 2,
-      title: "Mini Ultrasonic Jewelry & Watch Cleaner Pod",
+      title: "Ultrasonic Jewelry & Watch Cleaner",
       category: "Home & Kitchen",
       margin: "68%",
       aliPrice: "$8.20",
@@ -35,12 +35,12 @@ export default function App() {
       rating: 4.6,
       orders: "8,920/mo",
       trendScore: 94,
-      image: "https://images.unsplash.com/photo-1585659722983-386f57007c99?w=500&auto=format&fit=crop&q=60",
+      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&auto=format&fit=crop&q=60",
       description: "Compact high-frequency vibration cleaner for glasses, jewelry, and small accessories."
     },
     {
       id: 3,
-      title: "Magnetic Wireless Power Bank for MagSafe",
+      title: "Magnetic Wireless Power Bank",
       category: "Tech Gadgets",
       margin: "65%",
       aliPrice: "$11.00",
@@ -48,7 +48,7 @@ export default function App() {
       rating: 4.9,
       orders: "21,100/mo",
       trendScore: 92,
-      image: "https://images.unsplash.com/photo-1609592424156-fb2b31494c92?w=500&auto=format&fit=crop&q=60",
+      image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500&auto=format&fit=crop&q=60",
       description: "Ultra-slim 10,000mAh magnetic portable charger with fast charging output."
     }
   ];
@@ -146,17 +146,17 @@ export default function App() {
                 <div>
                   <div className="relative h-48 w-full bg-gray-900 overflow-hidden">
                     <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
-                    <span className="absolute top-3 right-3 bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">
+                    <span className="absolute top-3 right-3 bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow z-10">
                       Score: {p.trendScore}
                     </span>
-                    <span className="absolute top-3 left-3 bg-black/60 backdrop-blur text-gray-200 text-xs px-2.5 py-1 rounded-full">
+                    <span className="absolute top-3 left-3 bg-black/60 backdrop-blur text-gray-200 text-xs px-2.5 py-1 rounded-full z-10">
                       {p.category}
                     </span>
                   </div>
                   
                   <div className="p-5">
                     <h4 className="font-semibold text-lg text-white mb-2 leading-snug">{p.title}</h4>
-                    <p className="text-xs text-gray-400 mb-4">{p.description}</p>
+                    <p className="text-xs text-gray-400 mb-4 h-10 overflow-hidden">{p.description}</p>
                     
                     <div className="grid grid-cols-3 gap-2 bg-gray-900/50 p-3 rounded-xl border border-gray-800 text-center mb-4">
                       <div>
